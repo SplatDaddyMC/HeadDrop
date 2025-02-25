@@ -88,12 +88,22 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         Map<String, Integer> playerData = HeadDrop.getInstance().getDatabase().getPlayerData();
         List<Map.Entry<String, Integer>> sortedData = new ArrayList<>(playerData.entrySet());
         sortedData.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-        sender.sendMessage(ChatColor.RED + "=-=-= Top Head Hunters =-=-=");
+        sender.sendMessage(ChatColor.RED + "--[ Top Head Hunters ]--");
         for (int i = 0; i < Math.min(sortedData.size(), 10); i++) {
             Map.Entry<String, Integer> entry = sortedData.get(i);
-            sender.sendMessage(ChatColor.GOLD.toString() + (i + 1) + ". " + entry.getKey() + " - " + entry.getValue() + " Kills");
+            ChatColor rankColor;
+        
+            switch (i) {
+                case 0: rankColor = ChatColor.of("#b7950b"); break; 
+                case 1: rankColor = ChatColor.of("#bfc9ca"); break; 
+                case 2: rankColor = ChatColor.of("#ca6f1e"); break; 
+                default: rankColor = ChatColor.of("#D3D3D3"); break; 
+            }
+        
+            sender.sendMessage(rankColor + (i + 1) + ". " + entry.getKey() + " - " + entry.getValue() + " Kills");
         }
-        sender.sendMessage(ChatColor.RED + "=-=-=-=-=-=-=-=-=-=-=-=");
+
+        sender.sendMessage(ChatColor.RED + "----------------------");
     }
 
     private void generateDebugFile(CommandSender sender) {
