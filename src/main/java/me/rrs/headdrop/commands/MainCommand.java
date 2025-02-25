@@ -4,10 +4,10 @@ import me.rrs.headdrop.HeadDrop;
 import me.rrs.headdrop.listener.GUI;
 import me.rrs.headdrop.util.Lang;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
-
+import net.md_5.bungee.api.ChatColor;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,7 +20,16 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "HeadDrop by RRS"));
+	        sender.sendMessage("HeadDrop" + ChatColor.RESET + " plugin by RRS " +
+	            ChatColor.of(new Color(255, 255, 255)) + "(Forked for " + 
+	            ChatColor.of(new Color(255, 85, 85)) + "" + ChatColor.BOLD + "S" + 
+	            ChatColor.of(new Color(239, 191, 4)) + ChatColor.BOLD + "traight " + 
+	            ChatColor.of(new Color(255, 85, 85)) + "" + ChatColor.BOLD + "U" + 
+	            ChatColor.of(new Color(239, 191, 4)) + ChatColor.BOLD + "p" + 
+	            ChatColor.RESET + ChatColor.of(new Color(255, 255, 255)) + ")\n" + 
+	            ChatColor.of(new Color(255, 85, 85)) + "> " + ChatColor.of(new Color(239, 191, 4)) + 
+	            "/headdrop leaderboard" + ChatColor.of(new Color(255, 85, 85)) + " -> " + ChatColor.RESET + "view the kill leaderboard."
+	        );
         } else {
             switch (args[0].toLowerCase()) {
                 case "help":
@@ -35,9 +44,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 case "debug":
                     generateDebugFile(sender);
                     break;
-                case "gui":
+                /*case "gui":
                     openGUI(sender);
-                    break;
+                    break;*/
             }
         }
         return true;
@@ -45,12 +54,25 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
     private void sendHelpMessage(CommandSender sender) {
         if (sender instanceof Player player) {
+            // Convert standard color names to RGB equivalents:
+            // DARK_GREEN -> (0, 170, 0)
+            // AQUA -> (85, 255, 255)
+            // LIGHT_PURPLE -> (255, 85, 255)
+            // RESET remains as provided by ChatColor.RESET
             player.sendMessage(
-                    ChatColor.DARK_GREEN + "HeadDrop" + ChatColor.RESET + " plugin by RRS.",
-                    ChatColor.AQUA + "> " + ChatColor.LIGHT_PURPLE + "/headdrop help" + ChatColor.RESET + " -> you already discovered it!",
-                    ChatColor.AQUA + "> " + ChatColor.LIGHT_PURPLE + "/headdrop reload" + ChatColor.RESET + " -> reload plugin config.",
-                    ChatColor.AQUA + "> " + ChatColor.LIGHT_PURPLE + "/myhead" + ChatColor.RESET + " -> Get your head.",
-                    ChatColor.AQUA + "> " + ChatColor.LIGHT_PURPLE + "/head <player Name>" + ChatColor.RESET + " -> Get another player head"
+	            "HeadDrop" + ChatColor.RESET + " plugin by RRS " +
+	            ChatColor.of(new Color(255, 255, 255)) + "(Forked for " + 
+	            ChatColor.of(new Color(255, 85, 85)) + "" + ChatColor.BOLD + "S" + 
+	            ChatColor.of(new Color(239, 191, 4)) + ChatColor.BOLD + "traight " + 
+	            ChatColor.of(new Color(255, 85, 85)) + "" + ChatColor.BOLD + "U" + 
+	            ChatColor.of(new Color(239, 191, 4)) + ChatColor.BOLD + "p" + 
+	            ChatColor.RESET + ChatColor.of(new Color(255, 255, 255)) + ")\n" + 
+	            ChatColor.of(new Color(255, 85, 85)) + "> " + ChatColor.of(new Color(239, 191, 4)) + 
+	            "/headdrop leaderboard" + ChatColor.of(new Color(255, 85, 85)) + " -> " + ChatColor.RESET + "view the kill leaderboard."
+                //ChatColor.of(new Color(85, 255, 255)) + "> " + ChatColor.of(new Color(255, 85, 255)) + "/headdrop help" + ChatColor.RESET + " -> you already discovered it!",
+                //ChatColor.of(new Color(85, 255, 255)) + "> " + ChatColor.of(new Color(255, 85, 255)) + "/headdrop reload" + ChatColor.RESET + " -> reload plugin config.",
+                //ChatColor.of(new Color(85, 255, 255)) + "> " + ChatColor.of(new Color(255, 85, 255)) + "/myhead" + ChatColor.RESET + " -> Get your head.",
+                //ChatColor.of(new Color(85, 255, 255)) + "> " + ChatColor.of(new Color(255, 85, 255)) + "/head <player Name>" + ChatColor.RESET + " -> Get another player head"
             );
         }
     }
@@ -61,7 +83,8 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 try {
                     HeadDrop.getInstance().getLang().reload();
                     HeadDrop.getInstance().getConfiguration().reload();
-                    lang.msg(ChatColor.GREEN + "[HeadDrop] " + ChatColor.RESET, "Reload", player);
+                    // GREEN -> (85, 255, 85)
+                    lang.msg(ChatColor.of(new Color(85, 255, 85)) + "[HeadDrop] " + ChatColor.RESET, "Reload", player);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -79,32 +102,50 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    private void showLeaderboard(CommandSender sender) {
-        if (!HeadDrop.getInstance().getConfiguration().getBoolean("Database.Enable")){
-            Bukkit.getLogger().severe("[HeadDrop] Enable database on config!");
-            if (sender instanceof Player) sender.sendMessage("[HeadDrop] Check console log!");
-            return;
-        }
-        Map<String, Integer> playerData = HeadDrop.getInstance().getDatabase().getPlayerData();
-        List<Map.Entry<String, Integer>> sortedData = new ArrayList<>(playerData.entrySet());
-        sortedData.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
-        sender.sendMessage(ChatColor.RED + "--[ Top Head Hunters ]--");
-        for (int i = 0; i < Math.min(sortedData.size(), 10); i++) {
-            Map.Entry<String, Integer> entry = sortedData.get(i);
-            ChatColor rankColor;
-        
-            switch (i) {
-                case 0: rankColor = ChatColor.of("#b7950b"); break; 
-                case 1: rankColor = ChatColor.of("#bfc9ca"); break; 
-                case 2: rankColor = ChatColor.of("#ca6f1e"); break; 
-                default: rankColor = ChatColor.of("#D3D3D3"); break; 
-            }
-        
-            sender.sendMessage(rankColor + (i + 1) + ". " + entry.getKey() + " - " + entry.getValue() + " Kills");
-        }
-
-        sender.sendMessage(ChatColor.RED + "----------------------");
-    }
+		private void showLeaderboard(CommandSender sender) {
+		    if (!HeadDrop.getInstance().getConfiguration().getBoolean("Database.Enable")) {
+		        Bukkit.getLogger().severe("[HeadDrop] Enable database on config!");
+		        if (sender instanceof Player) sender.sendMessage("[HeadDrop] Check console log!");
+		        return;
+		    }
+		
+		    Map<String, Integer> playerData = HeadDrop.getInstance().getDatabase().getPlayerData();
+		    List<Map.Entry<String, Integer>> sortedData = new ArrayList<>(playerData.entrySet());
+		    sortedData.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+		
+		    sender.sendMessage(ChatColor.of(new Color(255, 85, 85)) + "--- Top Head Hunters ---");
+		
+		    for (int i = 0; i < Math.min(sortedData.size(), 10); i++) {
+		        Map.Entry<String, Integer> entry = sortedData.get(i);
+		
+		        ChatColor numberColor;
+		        ChatColor rankColor;
+		
+		        switch (i) {
+		            case 0:
+		                numberColor = ChatColor.of(new Color(239, 191, 4));
+		                rankColor = ChatColor.of(new Color(239, 191, 4));
+		                break;
+		            case 1:
+		                numberColor = ChatColor.of(new Color(191, 201, 202));
+		                rankColor = ChatColor.of(new Color(191, 201, 202));
+		                break;
+		            case 2:
+		                numberColor = ChatColor.of(new Color(206, 137, 70));
+		                rankColor = ChatColor.of(new Color(206, 137, 70));
+		                break;
+		            default:
+		                numberColor = ChatColor.of(new Color(255, 255, 85));
+		                rankColor = ChatColor.of(new Color(255, 255, 255));
+		                break;
+		        }
+		
+		        sender.sendMessage(numberColor.toString() + (i + 1) + ". " + rankColor.toString() + entry.getKey()
+		                + " - " + entry.getValue() + " Kills");
+		    }
+		
+		    sender.sendMessage(ChatColor.of(new Color(255, 85, 85)) + "-----------------------");
+		}
 
     private void generateDebugFile(CommandSender sender) {
         if (sender instanceof ConsoleCommandSender) {
@@ -127,7 +168,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                     writer.write("Enable-Looting: " + HeadDrop.getInstance().getConfiguration().getBoolean("Config.Enable-Looting") + "\n");
                     writer.write("Enable-Perm-Chance: " + HeadDrop.getInstance().getConfiguration().getBoolean("Config.Enable-Perm-Chance") + "\n");
                     writer.write("Database: " + HeadDrop.getInstance().getConfiguration().getBoolean("Database.Online") + "\n");
-                    writer.write("Premium: " + "True" + "\n");
+                    writer.write("Premium: True\n");
                 }
                 Bukkit.getLogger().info("[HeadDrop-Debug] debug.txt file created!");
             } catch (IOException e) {
@@ -145,12 +186,11 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
-
-        if (cmd.getName().equals("headdrop") && args.length ==1){
-            return Arrays.asList("help", "reload", "leaderboard", "gui");
+        if (cmd.getName().equals("headdrop") && args.length == 1) {
+            //return Arrays.asList("help", "reload", "leaderboard", "gui");
+			return Arrays.asList("help", "reload", "leaderboard");
         }
         return Collections.emptyList();
     }
