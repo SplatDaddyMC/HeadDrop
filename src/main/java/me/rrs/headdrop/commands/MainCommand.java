@@ -54,11 +54,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
     private void sendHelpMessage(CommandSender sender) {
         if (sender instanceof Player player) {
-            // Convert standard color names to RGB equivalents:
-            // DARK_GREEN -> (0, 170, 0)
-            // AQUA -> (85, 255, 255)
-            // LIGHT_PURPLE -> (255, 85, 255)
-            // RESET remains as provided by ChatColor.RESET
             player.sendMessage(
 	            "HeadDrop" + ChatColor.RESET + " plugin by RRS " +
 	            ChatColor.of(new Color(255, 255, 255)) + "(Forked for " + 
@@ -83,7 +78,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 try {
                     HeadDrop.getInstance().getLang().reload();
                     HeadDrop.getInstance().getConfiguration().reload();
-                    // GREEN -> (85, 255, 85)
                     lang.msg(ChatColor.of(new Color(85, 255, 85)) + "[HeadDrop] " + ChatColor.RESET, "Reload", player);
                 } catch (IOException e) {
                     e.printStackTrace();
