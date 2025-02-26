@@ -26,9 +26,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 	            ChatColor.of(new Color(239, 191, 4)) + ChatColor.BOLD + "traight " + 
 	            ChatColor.of(new Color(255, 85, 85)) + "" + ChatColor.BOLD + "U" + 
 	            ChatColor.of(new Color(239, 191, 4)) + ChatColor.BOLD + "p" + 
-	            ChatColor.RESET + ChatColor.of(new Color(255, 255, 255)) + ")\n" + 
-	            ChatColor.of(new Color(255, 85, 85)) + "> " + ChatColor.of(new Color(239, 191, 4)) + 
-	            "/headdrop leaderboard" + ChatColor.of(new Color(255, 85, 85)) + " -> " + ChatColor.RESET + "view the kill leaderboard."
+	            ChatColor.RESET + ChatColor.of(new Color(255, 255, 255)) + ")"
+	            //ChatColor.of(new Color(255, 85, 85)) + "> " + ChatColor.of(new Color(239, 191, 4)) +
+	            //"/headdrop leaderboard" + ChatColor.of(new Color(255, 85, 85)) + " -> " + ChatColor.RESET + "view the kill leaderboard."
 	        );
         } else {
             switch (args[0].toLowerCase()) {
@@ -38,9 +38,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 case "reload":
                     reloadConfigAndLang(sender);
                     break;
-                case "leaderboard":
+                /*case "leaderboard":
                     showLeaderboard(sender);
-                    break;
+                    break;*/
                 case "debug":
                     generateDebugFile(sender);
                     break;
@@ -61,9 +61,9 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 	            ChatColor.of(new Color(239, 191, 4)) + ChatColor.BOLD + "traight " + 
 	            ChatColor.of(new Color(255, 85, 85)) + "" + ChatColor.BOLD + "U" + 
 	            ChatColor.of(new Color(239, 191, 4)) + ChatColor.BOLD + "p" + 
-	            ChatColor.RESET + ChatColor.of(new Color(255, 255, 255)) + ")\n" + 
-	            ChatColor.of(new Color(255, 85, 85)) + "> " + ChatColor.of(new Color(239, 191, 4)) + 
-	            "/headdrop leaderboard" + ChatColor.of(new Color(255, 85, 85)) + " -> " + ChatColor.RESET + "view the kill leaderboard."
+	            ChatColor.RESET + ChatColor.of(new Color(255, 255, 255)) + ")" 
+	            //ChatColor.of(new Color(255, 85, 85)) + "> " + ChatColor.of(new Color(239, 191, 4)) + 
+	            //"/headdrop leaderboard" + ChatColor.of(new Color(255, 85, 85)) + " -> " + ChatColor.RESET + "view the kill leaderboard."
                 //ChatColor.of(new Color(85, 255, 255)) + "> " + ChatColor.of(new Color(255, 85, 255)) + "/headdrop help" + ChatColor.RESET + " -> you already discovered it!",
                 //ChatColor.of(new Color(85, 255, 255)) + "> " + ChatColor.of(new Color(255, 85, 255)) + "/headdrop reload" + ChatColor.RESET + " -> reload plugin config.",
                 //ChatColor.of(new Color(85, 255, 255)) + "> " + ChatColor.of(new Color(255, 85, 255)) + "/myhead" + ChatColor.RESET + " -> Get your head.",
@@ -184,7 +184,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         if (cmd.getName().equals("headdrop") && args.length == 1) {
             //return Arrays.asList("help", "reload", "leaderboard", "gui");
-			return Arrays.asList("help", "reload", "leaderboard");
+			return Arrays.asList("help", "reload");
         }
         return Collections.emptyList();
     }
